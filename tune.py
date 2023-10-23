@@ -13,7 +13,7 @@ v = 0
 a = 0
 
 # PID constants
-kP = 0.1
+kP = 0.001
 kI = 0
 kD = 0.1
 
@@ -24,6 +24,9 @@ kVelocity = 1.5
 kAcceleration = 0.03
 
 ff = 0
+p = 0
+i = 0
+d = 0
 
 t = 0
 while( t < 100):
@@ -36,16 +39,19 @@ while( t < 100):
     i = kI * sum(errors)
     d = kD * (error - errors[len(errors) - 2])
 
-    ff = 0 # goal * (kVelocity * v + kAcceleration * a)
+    ff = kVelocity * v + kAcceleration * a
 
     appliedVolts = max(min(ff + p + i + d, 12), -12)
 
-    a = (-kVelocity / kAcceleration)*v + (appliedVolts / kAcceleration)
+    a = (appliedVolts / kAcceleration) - (kVelocity / kAcceleration)*v
     v += a
     pos += v
 
     x.append(t)
     y.append(pos)
+
+print("Final Position: ", pos)
+print("Errors: ", errors)
 
 xpoints = np.array(x)
 ypoints = np.array(y)
